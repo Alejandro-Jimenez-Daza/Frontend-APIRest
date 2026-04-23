@@ -13,15 +13,15 @@
             required
           />
         </div>
+
         <div class="col-md-6 mb-3">
           <label class="form-label">Propietario</label>
-          <input
-            v-model="form.propietario"
-            type="text"
-            class="form-control"
-            placeholder="Nombre completo"
-            required
-          />
+          <select v-model="form.propietario_id" class="form-control" required="">
+            <option value="">-- Selecciona un propietario --</option>
+            <option v-for="p in propietarios" :key="p.id" :value="p.id">
+              {{ p.nombre_completo }}
+            </option>
+          </select>
         </div>
       </div>
 
@@ -82,7 +82,7 @@
         <tr v-for="c in carros" :key="c.id">
           <th scope="row">{{ c.id }}</th>
           <td>{{ c.matricula }}</td>
-          <td>{{ c.propietario }}</td>
+          <td>{{ c.propietario?.nombre_completo }}</td>
           <td>{{ c.marca }}</td>
           <td>{{ c.cilindraje }}</td>
           <!-- <td>{{ c.disponible }}</td> asi lo tenia yo, pero usamos ternario para mas legibilidad -->
@@ -100,6 +100,19 @@
 import { ref, onMounted } from 'vue'
 import api from '../services/api'
 
+//'inner join' para guardar los propietarios y traerlos al cargar
+const propietarios = ref([]) //lista en el select
+
+onMounted(async () => {
+  const res = await api.get('/carros')
+  carros.value = res.data
+
+  //trae los propietarios para llenar el select
+  const resProp = await api.get('/propietarios')
+  propietarios.value = resProp.data
+})
+//=-=-=-=-=-=-=-=-= en el form.value cambio propietario por propietario_id -=-=-=-=-=-=-=-=-=-
+
 const carros = ref([])
 const mensaje = ref('')
 //este es el ref
@@ -107,7 +120,7 @@ const form = ref({
   //variables del html arriba en los data rows
   id: '',
   matricula: '',
-  propietario: '',
+  propietario_id: '',
   marca: '',
   cilindraje: '',
   disponible: 0, // ← default false
@@ -129,7 +142,7 @@ async function guardarCarro() {
     form.value = {
       id: '',
       matricula: '',
-      propietario: '',
+      propietario_id: '',
       marca: '',
       cilindraje: '',
       disponible: 0, // ← default false
