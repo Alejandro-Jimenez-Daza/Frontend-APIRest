@@ -5,6 +5,8 @@
       <RouterLink class="nav-link" :to="{ name: 'dashboard' }">Inicio</RouterLink>
       <RouterLink class="nav-link" :to="{ name: 'carros' }">Carros</RouterLink>
       <RouterLink class="nav-link" :to="{ name: 'propietarios' }">Propietarios</RouterLink>
+      <RouterLink class="nav-link" :to="{ name: 'revisiones' }">Revisiones</RouterLink>
+
     </div>
     <div class="ms-auto">
       <button class="btn btn-outline-light btn-sm" @click="logout">Cerrar sesión</button>
